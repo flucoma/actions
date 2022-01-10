@@ -3,6 +3,10 @@ description: 'Installs common tools across FluCoMa continuous integration deploy
 runs:
   using: "composite"
   steps:
+    - name: check runner os
+      run: echo ${{ runner.os }}
+      shell: bash
+      
     - name: Create build folder
       run: mkdir -p build
       shell: bash
