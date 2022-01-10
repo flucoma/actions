@@ -1,0 +1,20 @@
+name: 'Build FluCoMa Toolkit for CLI'
+description: 'Builds the FluCoMa Toolkit for Command-line Interface'
+runs:
+  using: "composite"
+  steps:
+    - name: Install (Mac/Linux)
+      if: runner.os == 'macOS' || runner.os == 'Linux'
+      run: | 
+        cmake -GNinja -DFLUID_PATH=../core ..
+        ninja install
+      working-directory: build
+      shell: bash
+    
+    - name: Install (Windows)
+      if: runner.os == 'Windows'
+      run: | 
+        cmake -DFLUID_PATH="../core" ..
+        cmake --build . --target install --config Release
+      working-directory: build
+      shell: cmd
