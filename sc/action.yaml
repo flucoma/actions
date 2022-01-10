@@ -5,7 +5,8 @@ runs:
   steps:
     - name: Get SuperCollider Source
       run: git clone --recursive https://github.com/supercollider/supercollider.git sdk
-
+      shell: bash
+      
     - name: Call CMake
       run: cmake -GNinja -DSC_PATH=../sdk -DFLUID_PATH=../core ..
       shell: bash
