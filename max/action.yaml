@@ -1,0 +1,17 @@
+name: 'Build FluCoMa Toolkit for Max'
+description: 'Builds the FluCoMa Toolkit for Max'
+runs:
+  using: "composite"
+  steps:
+    - name: Get Max Source
+      run: git clone --recursive https://github.com/Cycling74/max-sdk.git sdk
+
+    - name: Call CMake
+      run: cmake -GNinja -DMAX_SDK_PATH=../sdk -DFLUID_PATH=../core ..
+      shell: bash
+      working-directory: build
+
+    - name: Run Ninja
+      run: ninja install
+      shell: bash
+      working-directory: build

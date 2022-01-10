@@ -1,0 +1,17 @@
+name: 'Build FluCoMa Toolkit for SuperCollider'
+description: 'Builds the FluCoMa Toolkit for SuperCollider'
+runs:
+  using: "composite"
+  steps:
+    - name: Get SuperCollider Source
+      run: git clone --recursive https://github.com/supercollider/supercollider.git sdk
+
+    - name: Call CMake
+      run: cmake -GNinja -DSC_PATH=../sdk -DFLUID_PATH=../core ..
+      shell: bash
+      working-directory: build
+
+    - name: Run Ninja
+      run: ninja install
+      shell: bash
+      working-directory: build

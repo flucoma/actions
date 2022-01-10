@@ -1,0 +1,26 @@
+name: 'Build FluCoMa Toolkit for PureData'
+description: 'Builds the FluCoMa Toolkit for PureData'
+runs:
+  using: "composite"
+  steps:
+    - name: Get PureData Source (Mac/Linux)
+      if: runner.os == 'macOS' || runner.os == 'Linux'
+      run: git clone https://github.com/pure-data/pure-data.git sdk
+      shell: bash
+
+    - name: Get PureData Source (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        Invoke-WebRequest -Uri https://msp.puredata.info/Software/pd-0.52-1.msw.zip -OutFile sdk.zip
+        Expand-Archive sdk.zip -DestinationPath ./ -Force
+      shell: pwsh
+
+    - name: Call CMake
+      run: cmake -GNinja -DPD_PATH=../sdk -DFLUID_PATH=../core ..
+      shell: bash
+      working-directory: build
+
+    - name: Run Ninja
+      run: ninja install
+      shell: bash
+      working-directory: build
