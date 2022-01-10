@@ -5,8 +5,20 @@ runs:
   steps:
     - name: Create build folder
       run: mkdir -p build
-      shell: bash
-    - name: 'Clone core repository at HEAD of dev'
+
+    - name: Clone core repository at HEAD of dev
       run: git clone --branch dev https://github.com/flucoma/flucoma-core.git core
-      shell: bash
+    
+    # Various Ninja installation steps
+    - name: Install ninja (Windows)
+      if: ${{ runner.os }} == 'Windows'
+      run: choco install ninja
+
+    - name: Install ninja (Mac)
+      if: ${{ runner.os }} == 'macOS'
+      run: brew install ninja
+
+    - name: Install ninja (Linux)
+      if: ${{ runner.os }} == 'Linux'
+      run: sudo apt-get install ninja-build
 
