@@ -1,0 +1,12 @@
+name: 'Setup FluCoMa Build Enivronment'
+description: 'Installs common tools across FluCoMa continuous integration deployment'
+runs:
+  using: "composite"
+  steps:
+    - name: Create build folder
+      run: mkdir -p build
+      shell: bash
+    - name: 'Clone core repository at HEAD of dev'
+      run: git clone --branch dev https://github.com/flucoma/flucoma-core.git core
+      shell: bash
+
