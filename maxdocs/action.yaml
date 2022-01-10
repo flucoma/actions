@@ -9,6 +9,9 @@ runs:
     - name: get max sdk
       run: git clone --recursive https://github.com/Cycling74/max-sdk.git sdk
       
+    - name: clone latest flucoma-docs
+      run: git clone --branch dev https://github.com/flucoma/flucoma-docs.git docs
+
     - name: cmake
       run: cmake -GNinja -DDOCS=ON -DFLUID_PATH=../core -DMAX_SDK_PATH=../sdk/ ..
       working-directory: build
