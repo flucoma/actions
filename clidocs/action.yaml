@@ -12,7 +12,7 @@ runs:
       shell: bash
 
     - name: cmake
-      run: cmake -GNinja -DDOCS=ON -DDOCS_PATH=../docs -DFLUID_PATH=../core ..
+      run: cmake -GNinja -DDOCS=ON -DFLUID_DOCS_PATH=../docs -DFLUID_PATH=../core ..
       working-directory: build
       shell: bash
 
