@@ -3,10 +3,6 @@ description: 'Installs common tools across FluCoMa continuous integration deploy
 runs:
   using: "composite"
   steps:
-    - name: check runner os
-      run: echo ${{ runner.os }}
-      shell: bash
-      
     - name: Create build folder
       run: mkdir -p build
       shell: bash
@@ -17,17 +13,17 @@ runs:
 
     # Various Ninja installation steps
     - name: Install ninja (Windows)
-      if: ${{ runner.os }} == 'Windows'
+      if: runner.os == 'Windows'
       run: choco install ninja
       shell: cmd
 
     - name: Install ninja (Mac)
-      if: ${{ runner.os }} == 'macOS'
+      if: runner.os == 'macOS'
       run: brew install ninja
       shell: bash
 
     - name: Install ninja (Linux)
-      if: ${{ runner.os }} == 'Linux'
+      if: runner.os == 'Linux'
       run: sudo apt-get install ninja-build
       shell: bash
 
