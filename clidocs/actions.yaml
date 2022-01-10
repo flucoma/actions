@@ -1,0 +1,22 @@
+name: 'Build FluCoMa Toolkit Docs for CLI'
+description: 'Builds the FluCoMa Docs Toolkit for CLI'
+runs:
+  using: "composite"
+  steps:
+    - name: install python dependencies
+      run: pip3 install pyyaml docutils jinja2
+      shell: bash
+      
+    - name: clone latest flucoma-docs
+      run: git clone --branch dev https://github.com/flucoma/flucoma-docs.git docs
+      shell: bash
+
+    - name: cmake
+      run: cmake -GNinja -DDOCS=ON -DDOCS_PATH=../docs -DFLUID_PATH=../core ..
+      working-directory: build
+      shell: bash
+
+    - name: install
+      run: ninja MAKE_CLI_REF
+      working-directory: build
+      shell: bash
