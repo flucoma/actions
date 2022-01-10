@@ -1,0 +1,21 @@
+name: 'Build FluCoMa Toolkit Docs for PureData'
+description: 'Builds the FluCoMa Docs Toolkit for PureData'
+runs:
+  using: "composite"
+  steps:
+    - name: install python dependencies
+      run: pip3 install pyyaml docutils jinja2
+
+    - name: get max sdk
+      run: git clone --recursive https://github.com/Cycling74/max-sdk.git sdk
+
+    - name: clone latest flucoma-docs
+      run: git clone --branch dev https://github.com/flucoma/flucoma-docs.git docs
+      
+    - name: cmake
+      run: cmake -GNinja -DDOCS=ON -DFLUID_PATH=../core -DPD_PATH=../sdk/ ..
+      working-directory: build
+
+    - name: install
+      run: ninja MAKE_PD_REF
+      working-directory: build
