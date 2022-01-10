@@ -5,6 +5,7 @@ runs:
   steps:
     - name: Get Max Source
       run: git clone --recursive https://github.com/Cycling74/max-sdk.git sdk
+      shell: bash
 
     - name: Call CMake
       run: cmake -GNinja -DMAX_SDK_PATH=../sdk -DFLUID_PATH=../core ..
