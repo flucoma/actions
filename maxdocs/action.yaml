@@ -1,0 +1,18 @@
+name: 'Build FluCoMa Toolkit Docs for Max'
+description: 'Builds the FluCoMa Docs Toolkit for Max'
+runs:
+  using: "composite"
+  steps:
+    - name: install python dependencies
+      run: pip3 install pyyaml docutils jinja2
+
+    - name: get max sdk
+      run: git clone --recursive https://github.com/Cycling74/max-sdk.git sdk
+      
+    - name: cmake
+      run: cmake -GNinja -DDOCS=ON -DFLUID_PATH=../core -DMAX_SDK_PATH=../sdk/ ..
+      working-directory: build
+
+    - name: install
+      run: ninja MAKE_MAX_REF
+      working-directory: build
