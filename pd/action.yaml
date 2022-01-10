@@ -15,12 +15,17 @@ runs:
         Expand-Archive sdk.zip -DestinationPath ./ -Force
       shell: pwsh
 
-    - name: Call CMake
-      run: cmake -GNinja -DPD_PATH=../sdk -DFLUID_PATH=../core ..
+    - name: Install (Mac/Linux)
+      if: runner.os == 'macOS' || runner.os == 'Linux'
+      run: | 
+        cmake -GNinja -DPD_PATH=../sdk -DFLUID_PATH=../core ..
+        ninja install
       shell: bash
       working-directory: build
-
-    - name: Run Ninja
-      run: ninja install
-      shell: bash
-      working-directory: build
+    
+    - name: Install (Windows)
+      if: runner.os == 'Windows'
+      run: | 
+        cmake cmake -DPD_PATH="../pd-0.52-1" -DFLUID_PATH="../core" ..
+        cmake --build . --target install --config Release
+      shell: cmd

@@ -7,12 +7,17 @@ runs:
       run: git clone --recursive https://github.com/Cycling74/max-sdk.git sdk
       shell: bash
 
-    - name: Call CMake
-      run: cmake -GNinja -DMAX_SDK_PATH=../sdk -DFLUID_PATH=../core ..
+    - name: Install (Mac/Linux)
+      if: runner.os == 'macOS' || runner.os == 'Linux'
+      run: | 
+        cmake -GNinja -DMAX_SDK_PATH=../sdk -DFLUID_PATH=../core ..
+        ninja install
       shell: bash
       working-directory: build
-
-    - name: Run Ninja
-      run: ninja install
-      shell: bash
-      working-directory: build
+    
+    - name: Install (Windows)
+      if: runner.os == 'Windows'
+      run: | 
+        cmake -DMAX_SDK_PATH="../sdk" -DFLUID_PATH="../core" ..
+        cmake --build . --target install --config Release
+      shell: cmd

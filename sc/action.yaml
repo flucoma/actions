@@ -6,13 +6,18 @@ runs:
     - name: Get SuperCollider Source
       run: git clone --recursive https://github.com/supercollider/supercollider.git sdk
       shell: bash
-      
-    - name: Call CMake
-      run: cmake -GNinja -DSC_PATH=../sdk -DFLUID_PATH=../core ..
-      shell: bash
-      working-directory: build
 
-    - name: Run Ninja
-      run: ninja install
+    - name: Install (Mac/Linux)
+      if: runner.os == 'macOS' || runner.os == 'Linux'
+      run: | 
+        cmake -GNinja -DSC_PATH=../sdk -DFLUID_PATH=../core ..
+        ninja install
       shell: bash
       working-directory: build
+    
+    - name: Install (Windows)
+      if: runner.os == 'Windows'
+      run: | 
+        cmake -DSC_PATH="../sdk" -DFLUID_PATH="../core" ..
+        cmake --build . --target install --config Release
+      shell: cmd
