@@ -8,9 +8,9 @@ runs:
       shell: bash
 
     - name: Install (Mac/Linux)
-      if: runner.os == 'macOS' || runner.os == 'Linux'
+      if: runner.os == 'macOS'
       run: | 
-        cmake -GNinja -DMAX_SDK_PATH=../sdk -DFLUID_PATH=../core ..
+        cmake -GNinja -DMAX_SDK_PATH=../sdk -DFLUID_PATH=../core -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" ..
         ninja install
       working-directory: build
       shell: bash
