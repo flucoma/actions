@@ -8,16 +8,16 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: install python dependencies
-      run: pip3 install -r docs/requirements.txt
-      shell: bash
-
     - name: get max sdk
       run: git clone --recursive https://github.com/Cycling74/max-sdk.git sdk
       shell: bash
       
     - name: clone latest flucoma-docs
       run: git clone --branch ${{ inputs.branch }} https://github.com/flucoma/flucoma-docs.git docs
+      shell: bash
+
+    - name: install python dependencies
+      run: pip3 install -r docs/requirements.txt
       shell: bash
 
     - name: cmake
