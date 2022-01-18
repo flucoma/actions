@@ -10,7 +10,7 @@ runs:
   using: "composite"
   steps:
     - name: install python dependencies
-      run: pip3 install -r requirements.txt
+      run: pip3 install -r docs/requirements.txt
       shell: bash
       
     - name: clone latest flucoma-docs
