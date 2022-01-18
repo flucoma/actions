@@ -9,7 +9,7 @@ runs:
   using: "composite"
   steps:
     - name: install python dependencies
-      run: pip3 install pyyaml docutils jinja2
+      run: pip3 install -r requirements.txt
       shell: bash
 
     - name: get max sdk
