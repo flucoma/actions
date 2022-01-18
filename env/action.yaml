@@ -1,5 +1,11 @@
 name: 'Setup FluCoMa Build Enivronment'
 description: 'Installs common tools across FluCoMa continuous integration deployment'
+inputs:
+  branch:
+    description: 'Which branch to pull dependencies from (main/dev)'
+    required: false
+    default: 'dev'
+
 runs:
   using: "composite"
   steps:
@@ -8,10 +14,9 @@ runs:
       shell: bash
 
     - name: Clone core repository at HEAD of dev
-      run: git clone --branch dev https://github.com/flucoma/flucoma-core.git core
+      run: git clone --branch ${{ inputs.branch }} https://github.com/flucoma/flucoma-core.git core
       shell: bash
 
-    # Various Ninja installation steps
     - name: Install ninja (Windows)
       if: runner.os == 'Windows'
       run: choco install ninja

@@ -1,5 +1,11 @@
 name: 'Build FluCoMa Toolkit Docs for CLI'
 description: 'Builds the FluCoMa Docs Toolkit for CLI'
+inputs:
+  branch:
+    description: 'Which branch to pull dependencies from (main/dev)'
+    required: false
+    default: 'dev'
+
 runs:
   using: "composite"
   steps:
@@ -8,7 +14,7 @@ runs:
       shell: bash
       
     - name: clone latest flucoma-docs
-      run: git clone --branch dev https://github.com/flucoma/flucoma-docs.git docs
+      run: git clone --branch ${{ inputs.branch }} https://github.com/flucoma/flucoma-docs.git docs
       shell: bash
 
     - name: cmake
