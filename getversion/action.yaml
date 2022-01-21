@@ -8,13 +8,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: retrieve-version
+    - id: retrieve-version
       run: echo "::set-output name=sha::$(cat flucoma.version.rc)"
       working-directory: core
       shell: bash
-    
-    - name: catcatacat
-      run: cat flucoma.version.rc
-      working-directory: core
-      shell: bash
-
