@@ -6,6 +6,11 @@ inputs:
     required: false
     default: 'dev'
 
+outputs:
+  version:
+    description: "The version SHA of the release"
+    value: ${{ steps.retrieve-version.outputs.sha }}
+
 runs:
   using: "composite"
   steps:
@@ -15,6 +20,10 @@ runs:
 
     - name: Clone core repository at HEAD of dev
       run: git clone --branch ${{ inputs.branch }} https://github.com/flucoma/flucoma-core.git core
+      shell: bash
+
+    - name: retrieve-version
+      run: echo "::set-output name=sha::"$(cat flucoma.version.rc)
       shell: bash
 
     - name: Install ninja (Windows)
