@@ -13,10 +13,6 @@ runs:
       working-directory: core
       shell: bash
     
-    - name: catcat
-      run: cat docs/flucoma.version.rc
-      shell: bash
-    
     - name: catcatacat
       run: cat flucoma.version.rc
       working-directory: core
