@@ -12,4 +12,11 @@ runs:
       run: echo "::set-output name=sha::$(cat flucoma.version.rc)"
       working-directory: core
       shell: bash
+    
+    - name: catcat
+      run: cat docs/flucoma.version.rc
+    
+    - name: catcatacat
+      run: cat flucoma.version.rc
+      working-directory: core
 
