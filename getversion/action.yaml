@@ -1,0 +1,15 @@
+name: 'Get build hash'
+description: 'Get the hash of the build from flucoma.version.rc'
+outputs:
+  version:
+    description: "The version SHA of the release"
+    value: ${{ steps.retrieve-version.outputs.sha }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: retrieve-version
+      run: echo "::set-output name=sha::$(cat flucoma.version.rc)"
+      working-directory: core
+      shell: bash
+
