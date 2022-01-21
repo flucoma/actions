@@ -23,7 +23,7 @@ runs:
       shell: bash
 
     - name: retrieve-version
-      run: echo "::set-output name=sha::$(cat flucoma.version.rc)"
+      run: echo "::set-output name=sha::$(cat core/flucoma.version.rc)"
       shell: bash
 
     - name: Install ninja (Windows)
