@@ -16,9 +16,14 @@ runs:
     - name: clone latest flucoma-docs
       run: git clone --single-branch --branch ${{ inputs.branch }} https://github.com/flucoma/flucoma-docs.git docs
       shell: bash
+
+    - name: setup python setup
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
       
     - name: install python dependencies
-      run: pip3 install -r docs/requirements.txt
+      run: pip install -r docs/requirements.txt
       shell: bash
 
     - name: Configure CMake
