@@ -14,7 +14,7 @@ runs:
   using: "composite"
   steps:
     - name: clone latest flucoma-docs
-      run: git clone --single-branch ${{ inputs.branch }} https://github.com/flucoma/flucoma-docs.git docs
+      run: git clone --single-branch --branch ${{ inputs.branch }} https://github.com/flucoma/flucoma-docs.git docs
       shell: bash
       
     - name: install python dependencies
