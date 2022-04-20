@@ -15,14 +15,22 @@ runs:
         Expand-Archive sdk.zip -DestinationPath ./ -Force
       shell: pwsh
 
-    - name: Install (Mac/Linux)
-      if: runner.os == 'macOS' || runner.os == 'Linux'
+    - name: Install Mac
+      if: runner.os == 'macOS'
+      run: | 
+        cmake -GNinja -DPD_PATH=../sdk -DFLUID_PATH=../core -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" ..
+        ninja install
+      working-directory: build
+      shell: bash
+    
+    - name: Install Linux
+      if: runner.os == 'Linux'
       run: | 
         cmake -GNinja -DPD_PATH=../sdk -DFLUID_PATH=../core ..
         ninja install
       working-directory: build
       shell: bash
-    
+
     - name: Install (Windows)
       if: runner.os == 'Windows'
       run: | 
