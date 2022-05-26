@@ -1,12 +1,17 @@
 name: 'Build FluCoMa Toolkit for CLI'
 description: 'Builds the FluCoMa Toolkit for Command-line Interface'
+inputs:
+  branch:
+    description: 'Which branch to pull flucoma dependencies from (main/dev)'
+    required: true
+    default: 'dev'
 runs:
   using: "composite"
   steps:
     - name: Install (Mac/Linux)
       if: runner.os == 'macOS' || runner.os == 'Linux'
       run: | 
-        cmake -GNinja -DFLUID_PATH=../core ..
+        cmake -GNinja -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} ..
         ninja install
       working-directory: build
       shell: bash
@@ -14,7 +19,7 @@ runs:
     - name: Install (Windows)
       if: runner.os == 'Windows'
       run: | 
-        cmake -DFLUID_PATH="../core" ..
+        cmake  -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} ..
         cmake --build . --target install --config Release
       working-directory: build
       shell: cmd
