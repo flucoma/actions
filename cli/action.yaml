@@ -8,10 +8,16 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: setup python setup
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+        
     - name: Install (Mac/Linux)
       if: runner.os == 'macOS' || runner.os == 'Linux'
       run: | 
         cmake -GNinja -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} ..
+        pip install -r _deps/flucoma-docs-src/requirements.txt
         ninja install
       working-directory: build
       shell: bash
@@ -20,6 +26,7 @@ runs:
       if: runner.os == 'Windows'
       run: | 
         cmake  -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} ..
+        pip install -r _deps/flucoma-docs-src/requirements.txt
         cmake --build . --target install --config Release
       working-directory: build
       shell: cmd
