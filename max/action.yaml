@@ -30,7 +30,7 @@ runs:
     - name: Install (Windows)
       if: runner.os == 'Windows'
       run: | 
-        cmake -DMAX_SDK_PATH="../sdk" ..
+        cmake -DMAX_SDK_PATH="../sdk" -DFLUID_BRANCH=${{ inputs.branch }} ..
         cmake --build . --target install --config Release
       working-directory: build
       shell: cmd
