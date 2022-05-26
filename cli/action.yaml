@@ -9,7 +9,7 @@ runs:
   using: "composite"
   steps:
     - name: setup python setup
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v2
       id: py39
       with:
         python-version: '3.9'
