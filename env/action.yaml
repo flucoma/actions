@@ -13,9 +13,9 @@ runs:
       run: mkdir -p build
       shell: bash
 
-    - name: Clone core repository at HEAD of dev
-      run: git clone --branch ${{ inputs.branch }} https://github.com/flucoma/flucoma-core.git core
-      shell: bash
+    # - name: Clone core repository at HEAD of dev
+    #   run: git clone --branch ${{ inputs.branch }} https://github.com/flucoma/flucoma-core.git core
+    #   shell: bash
 
     - name: Install ninja (Windows)
       if: runner.os == 'Windows'
@@ -31,4 +31,3 @@ runs:
       if: runner.os == 'Linux'
       run: sudo apt-get install ninja-build
       shell: bash
-

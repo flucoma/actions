@@ -1,8 +1,19 @@
 name: 'Build FluCoMa Toolkit for PureData'
 description: 'Builds the FluCoMa Toolkit for PureData'
+inputs:
+  branch:
+    description: 'Which branch to pull flucoma dependencies from (main/dev)'
+    required: true
+    default: 'dev'
 runs:
   using: "composite"
   steps:
+    - name: setup python setup
+      uses: actions/setup-python@v3
+      id: py39
+      with:
+        python-version: '3.9'    
+    
     - name: Get PureData Source (Mac/Linux)
       if: runner.os == 'macOS' || runner.os == 'Linux'
       run: git clone https://github.com/pure-data/pure-data.git sdk
@@ -18,7 +29,8 @@ runs:
     - name: Install Mac
       if: runner.os == 'macOS'
       run: | 
-        cmake -GNinja -DPD_PATH=../sdk -DFLUID_PATH=../core -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" ..
+        cmake -GNinja -DPD_PATH=../sdk -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
+        pip install -r _deps/flucoma-docs-src/requirements.txt
         ninja install
       working-directory: build
       shell: bash
@@ -26,7 +38,8 @@ runs:
     - name: Install Linux
       if: runner.os == 'Linux'
       run: | 
-        cmake -GNinja -DPD_PATH=../sdk -DFLUID_PATH=../core ..
+        cmake -GNinja -DPD_PATH=../sdk -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
+        pip install -r _deps/flucoma-docs-src/requirements.txt
         ninja install
       working-directory: build
       shell: bash
@@ -34,7 +47,8 @@ runs:
     - name: Install (Windows)
       if: runner.os == 'Windows'
       run: | 
-        cmake cmake -DPD_PATH="../pd-0.52-1" -DFLUID_PATH="../core" ..
+        cmake cmake -DPD_PATH="../pd-0.52-1" -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
+        pip install -r _deps/flucoma-docs-src/requirements.txt
         cmake --build . --target install --config Release
       working-directory: build
       shell: cmd
