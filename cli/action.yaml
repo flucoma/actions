@@ -19,7 +19,7 @@ runs:
     - name: Install (Mac/Linux)
       if: runner.os == 'macOS' || runner.os == 'Linux'
       run: | 
-        cmake -GNinja -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_EXECUTABLE=${{ env.pythonLocation }} ..
+        cmake -GNinja -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
         pip install -r _deps/flucoma-docs-src/requirements.txt
         ninja install
       working-directory: build
@@ -28,7 +28,7 @@ runs:
     - name: Install (Windows)
       if: runner.os == 'Windows'
       run: | 
-        cmake -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_EXECUTABLE=${{ env.pythonLocation }} ..
+        cmake -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
         pip install -r _deps/flucoma-docs-src/requirements.txt
         cmake --build . --target install --config Release
       working-directory: build
