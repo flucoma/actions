@@ -1,7 +1,7 @@
 name: 'Code signing and notarisation'
 description: 'Uses xcode command line tools to sign the binaries and notarise them'
 inputs:
-  binaries:
+  binary:
     description: 'Glob for binaries'
     required: true
     default: ''
