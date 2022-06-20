@@ -12,6 +12,9 @@ inputs:
   codesign_options:
     description: 'Whether or not to code sign a hardened runtime'
     default: ''
+  dmg:
+    description: 'Should it sign and notarise as a .dmg'
+    default: false
   cert:
     description: 'base64 encoded certificate'
     required: true
@@ -35,7 +38,7 @@ runs:
       shell: bash
       run: brew install fd
 
-    - name: sign and notarise
+    - name: setup keychain and identities
       shell: bash
       run: |
         # create variables
@@ -58,6 +61,28 @@ runs:
         security import "$CERTPATH" -P "${{ inputs.certpwd }}" -A -t cert -f pkcs12 -k "$KEYCHAINPATH" -T /usr/bin/codesign
         security set-key-partition-list -S apple-tool:,apple:, -s -k "$KEYCHAINPATH" -D "${{ inputs.cert }}" -t private "$KEYCHAINPATH"
         
+        xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.appusr }} --team-id ${{ inputs.teamid }} --password ${{ inputs.apppwd }}
+
+    - name: DMG Signing
+      if: inputs.dmg
+      run: |
+        # cd to the package
+        cd "${{ inputs.package }}"
+
+        # what are working with here?
+        fd ${{ inputs.glob }} -E .git -I
+
+        # sign every binary in the binary directory
+        fd ${{ inputs.glob }} -E .git -I -x codesign --options=${{ inputs.codesign_options }} -s "Developer ID Application" {}
+
+        hdiutil create -srcFolder FluidCorpusManipulation/ -o FluidCorpusManipulation.dmg
+        codesign -s "Developer ID Application" --timestamp -i org.flucoma FluidCorpusManipulation.dmg
+
+        xcrun notarytool submit FluidCorpusManipulation.dmg --keychain-profile "ACPASS" --wait
+
+    - name: Bundle Signing
+      if: inputs.dmg == 'false'
+      run: |
         # cd to the package
         cd "${{ inputs.package }}"
 
@@ -76,7 +101,6 @@ runs:
         # now create a notarisation friendly zip
         /usr/bin/ditto -c -k --keepParent to_notarise to_notarise.zip
 
-        xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.appusr }} --team-id ${{ inputs.teamid }} --password ${{ inputs.apppwd }}
         xcrun notarytool submit to_notarise.zip --keychain-profile "ACPASS" --wait
 
         # rm -rf to_notarise to_notarise.zip
