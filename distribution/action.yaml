@@ -27,6 +27,10 @@ runs:
     - name: install fd
       shell: bash
       run: brew install fd
+    
+    - name: test pipe
+      shell: bash
+      run: echo "foo" | base64 --decode
 
     - name: sign and notarise
       shell: bash
