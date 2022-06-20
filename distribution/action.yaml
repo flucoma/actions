@@ -55,7 +55,7 @@ runs:
         mkdir -p to_notarise
 
         # now copy each of those binaries to a folder before notarisation
-        fd -e ${{ inputs.binary }} -x cp {} to_notarise/{/} 
+        fd -e ${{ inputs.binary }} -x ditto {} to_notarise/{/} 
         
         # sign every binary in the binary directory
         cd to_notarise
