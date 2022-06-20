@@ -36,14 +36,11 @@ runs:
         KEYCHAINPWD=foobarbazbob
         KEYCHAINPATH=$RUNNER_TEMP/app-signing.keychain-db
 
-    # We have to do this because the literal block scalar breaks the pipe operator
-    - name: import certificates
-      shell: bash
-      run: echo -n "${{ inputs.CERT }}" | base64 --decode --output $CERTPATH
-    
-    - name: the rest
-      shell: bash
-      run: |
+        echo "${{ inputs.CERT }}"
+
+        # We have to do this because the literal block scalar breaks the pipe operator
+        echo -n "${{ inputs.CERT }}" | base64 --decode --output $CERTPATH
+        
         # create temporary keychain
         security create-keychain -p "$KEYCHAINPWD" "$KEYCHAINPATH"
 
