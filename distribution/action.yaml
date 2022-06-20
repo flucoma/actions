@@ -83,7 +83,7 @@ runs:
 
     - name: Bundle Signing
       shell: bash
-      if: inputs.dmg == 'false'
+      if: inputs.dmg == false
       run: |
         # cd to the package
         cd "${{ inputs.package }}"
