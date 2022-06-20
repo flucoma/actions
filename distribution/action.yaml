@@ -71,4 +71,6 @@ runs:
         rm -rf to_notarise to_notarise.zip
 
         fd -e ${{ inputs.binary }} -x xcrun stapler staple {}
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
 
