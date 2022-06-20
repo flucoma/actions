@@ -37,7 +37,7 @@ runs:
         KEYCHAINPATH=$RUNNER_TEMP/app-signing.keychain-db
 
         # import certificate and provisioning profile from secrets
-        /bin.bash -c "echo -n ${{ inputs.CERT }} | base64 --decode --output $CERTPATH"
+        /bin/bash -c "echo -n ${{ inputs.CERT }} | base64 --decode --output $CERTPATH"
 
         # create temporary keychain
         security create-keychain -p "$KEYCHAINPWD" "$KEYCHAINPATH"
