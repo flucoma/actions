@@ -5,19 +5,19 @@ inputs:
     description: 'Glob for binaries'
     required: true
     default: ''
-  CERT:
+  cert:
     description: 'base64 encoded certificate'
     required: true
-  CERTPWD:
+  certpwd:
     description: 'Password to unlock the certificate'
     required: true
-  TEAMID:
+  teamid:
     description: 'The team identifier for notarisation'
     required: true
-  APPPWD:
+  apppwd:
     description: 'One-time password for App Store Conect'
     required: true
-  APPUSR:
+  appusr:
     description: 'Username for App Store Connect'
     required: true
     
@@ -37,7 +37,7 @@ runs:
         KEYCHAINPATH=$RUNNER_TEMP/app-signing.keychain-db
 
         # We have to do this because the literal block scalar breaks the pipe operator
-        echo -n "${{ inputs.CERT }}" | base64 --decode --output $CERTPATH
+        echo -n "${{ inputs.cert }}" | base64 --decode --output $CERTPATH
         
         # create temporary keychain
         security create-keychain -p "$KEYCHAINPWD" "$KEYCHAINPATH"
@@ -48,8 +48,8 @@ runs:
         security unlock-keychain -p "$KEYCHAINPWD" "$KEYCHAINPATH"
 
         # import p12 to keychain
-        security import "$CERTPATH" -P "${{ inputs.CERTPWD }}" -A -t cert -f pkcs12 -k "$KEYCHAINPATH" -T /usr/bin/codesign
-        security set-key-partition-list -S apple-tool:,apple:, -s -k "$KEYCHAINPATH" -D "${{ inputs.CERT }}" -t private "$KEYCHAINPATH"
+        security import "$CERTPATH" -P "${{ inputs.certpwd }}" -A -t cert -f pkcs12 -k "$KEYCHAINPATH" -T /usr/bin/codesign
+        security set-key-partition-list -S apple-tool:,apple:, -s -k "$KEYCHAINPATH" -D "${{ inputs.cert }}" -t private "$KEYCHAINPATH"
         
         # create a folder to store the binaries in temporarily once signed
         mkdir -p to_notarise
@@ -65,7 +65,7 @@ runs:
         # now create a notarisation friendly zip
         /usr/bin/ditto -c -k --keepParent to_notarise to_notarise.zip
 
-        xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.APPUSR }} --team-id ${{ inputs.TEAMID }} --password ${{ inputs.APPPWD }}
+        xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.appusr }} --team-id ${{ inputs.teamid }} --password ${{ inputs.apppwd }}
         xcrun notarytool submit to_notarise.zip --keychain-profile "ACPASS" --wait
         fd -e ${{ inputs.binary }} -x xcrun stapler staple {}
 
