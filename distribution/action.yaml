@@ -54,6 +54,9 @@ runs:
         # create a folder to store the binaries in temporarily once signed
         mkdir -p to_notarise
 
+        # what are working with here?
+        fd ${{ inputs.glob }} -E .git -I
+
         # sign every binary in the binary directory
         fd ${{ inputs.glob }} -E .git -I -x codesign -s "Developer ID Application" {}
 
