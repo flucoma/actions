@@ -9,6 +9,9 @@ inputs:
     description: 'Glob for binaries'
     required: true
     default: '-e mxo'
+  codesign_options:
+    description: 'Whether or not to code sign a hardened runtime'
+    default: ''
   cert:
     description: 'base64 encoded certificate'
     required: true
@@ -65,7 +68,7 @@ runs:
         fd ${{ inputs.glob }} -E .git -I
 
         # sign every binary in the binary directory
-        fd ${{ inputs.glob }} -E .git -I -x codesign -s "Developer ID Application" {}
+        fd ${{ inputs.glob }} -E .git -I -x codesign --options=${{ inputs.codesign_options }} -s "Developer ID Application" {}
 
         # now copy each of those binaries to a folder before notarisation
         fd ${{ inputs.glob }} -E .git -I -x ditto {} to_notarise/{/} 
