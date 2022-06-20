@@ -1,0 +1,71 @@
+name: 'Code signing and notarisation'
+description: 'Uses xcode command line tools to sign the binaries and notarise them'
+inputs:
+  binaries:
+    description: 'Glob for binaries'
+    required: true
+    default: ''
+  CERT:
+    description: 'base64 encoded certificate'
+    required: true
+  CERTPWD:
+    description: 'Password to unlock the certificate'
+    required: true
+  TEAMID:
+    description: 'The team identifier for notarisation'
+    required: true
+  APPPWD:
+    description: 'One-time password for App Store Conect'
+    required: true
+  APPUSR:
+    description: 'Username for App Store Connect'
+    required: true
+    
+runs:
+  using: "composite"
+  steps:
+    - name: install fd
+      shell: bash
+      run: brew install fd
+
+    - name: sign and notarise
+      shell: bash
+      run: |
+        # create variables
+        CERTPATH=$RUNNER_TEMP/flucoma.p12
+        KEYCHAINPWD=foobarbazbob
+        KEYCHAINPATH=$RUNNER_TEMP/app-signing.keychain-db
+
+        # import certificate and provisioning profile from secrets
+        echo -n ${{ inputs.CERT }} | base64 --decode --output "$CERTPATH"
+
+        # create temporary keychain
+        security create-keychain -p "$KEYCHAINPWD" "$KEYCHAINPATH"
+
+        # append temp keychain to the user domain
+        security list-keychain -d user -s "$KEYCHAINPATH"
+        security set-keychain-settings "$KEYCHAINPATH"
+        security unlock-keychain -p "$KEYCHAINPWD" "$KEYCHAINPATH"
+
+        # import p12 to keychain
+        security import "$CERTPATH" -P ${{ inputs.CERTPWD }} -A -t cert -f pkcs12 -k $KEYCHAINPATH -T /usr/bin/codesign
+        security set-key-partition-list -S apple-tool:,apple:, -s -k $KEYCHAINPATH -D "${{ inputs.CERT }}" -t private $KEYCHAINPATH
+        
+        # create a folder to store the binaries in temporarily once signed
+        mkdir -p to_notarise
+
+        # now copy each of those binaries to a folder before notarisation
+        fd -e ${{ inputs.binary }} -x cp {} to_notarise/{/} 
+        
+        # sign every binary in the binary directory
+        cd to_notarise
+        fd -e ${{ inputs.binary }} -x codesign -s "Developer ID Application" {}
+        cd ..
+
+        # now create a notarisation friendly zip
+        /usr/bin/ditto -c -k --keepParent to_notarise to_notarise.zip
+
+        xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.APPUSR }} --team-id ${{ inputs.TEAMID }} --password ${{ inputs.APPPWD }}
+        xcrun notarytool submit to_notarise.zip --keychain-profile "ACPASS" --wait
+        fd -e ${{ inputs.binary }} -x xcrun stapler staple {}
+
