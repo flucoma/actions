@@ -29,7 +29,7 @@ runs:
       run: brew install fd
 
     - name: sign and notarise
-      shell: sh
+      shell: bash
       run: |
         # create variables
         CERTPATH=$RUNNER_TEMP/flucoma.p12
