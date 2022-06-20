@@ -1,6 +1,10 @@
 name: 'Code signing and notarisation'
 description: 'Uses xcode command line tools to sign the binaries and notarise them'
 inputs:
+  package:
+    description: 'Directory containing the release'
+    required: true
+    default: 'release-packaging'
   glob:
     description: 'Glob for binaries'
     required: true
@@ -51,6 +55,9 @@ runs:
         security import "$CERTPATH" -P "${{ inputs.certpwd }}" -A -t cert -f pkcs12 -k "$KEYCHAINPATH" -T /usr/bin/codesign
         security set-key-partition-list -S apple-tool:,apple:, -s -k "$KEYCHAINPATH" -D "${{ inputs.cert }}" -t private "$KEYCHAINPATH"
         
+        # cd to the package
+        cd "${{ inputs.package }}"
+
         # create a folder to store the binaries in temporarily once signed
         mkdir -p to_notarise
 
