@@ -68,9 +68,10 @@ runs:
         xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.appusr }} --team-id ${{ inputs.teamid }} --password ${{ inputs.apppwd }}
         xcrun notarytool submit to_notarise.zip --keychain-profile "ACPASS" --wait
 
-        rm -rf to_notarise to_notarise.zip
-
-        fd -e ${{ inputs.binary }} -x xcrun stapler staple {}
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
+
+        # rm -rf to_notarise to_notarise.zip
+
+        # fd -e ${{ inputs.binary }} -x xcrun stapler staple {}
 
