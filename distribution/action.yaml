@@ -76,7 +76,7 @@ runs:
         # sign every binary in the binary directory
         fd ${{ inputs.glob }} -E .git -I -x codesign --options=${{ inputs.codesign_options }} -s "Developer ID Application" {}
 
-        hdiutil create -srcFolder FluidCorpusManipulation/ -o FluidCorpusManipulation.dmg
+        hdiutil create -srcFolder . -o FluidCorpusManipulation.dmg
         codesign -s "Developer ID Application" --timestamp -i org.flucoma FluidCorpusManipulation.dmg
 
         xcrun notarytool submit FluidCorpusManipulation.dmg --keychain-profile "ACPASS" --wait
