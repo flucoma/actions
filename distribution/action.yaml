@@ -1,10 +1,10 @@
 name: 'Code signing and notarisation'
 description: 'Uses xcode command line tools to sign the binaries and notarise them'
 inputs:
-  binary:
+  glob:
     description: 'Glob for binaries'
     required: true
-    default: ''
+    default: '-e mxo'
   cert:
     description: 'base64 encoded certificate'
     required: true
@@ -55,10 +55,10 @@ runs:
         mkdir -p to_notarise
 
         # sign every binary in the binary directory
-        fd -e ${{ inputs.binary }} -x codesign -s "Developer ID Application" {}
+        fd ${{ inputs.glob }} -x codesign -s "Developer ID Application" {}
 
         # now copy each of those binaries to a folder before notarisation
-        fd -e ${{ inputs.binary }} -x ditto {} to_notarise/{/} 
+        fd ${{ inputs.glob }} -x ditto {} to_notarise/{/} 
 
         # now create a notarisation friendly zip
         /usr/bin/ditto -c -k --keepParent to_notarise to_notarise.zip
@@ -68,5 +68,5 @@ runs:
 
         # rm -rf to_notarise to_notarise.zip
 
-        fd -e ${{ inputs.binary }} -x xcrun stapler staple {}
+        fd ${{ inputs.glob }} -x xcrun stapler staple {}
 
