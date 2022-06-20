@@ -15,9 +15,9 @@ inputs:
   output:
     description: 'Output of DMG file'
     default: FluCoMa.dmg
-  dmg:
-    description: 'Should it sign and notarise as a .dmg'
-    default: false
+  output_type:
+    description: 'Choose between dmg or bundle'
+    default: 'dmg'
   cert:
     description: 'base64 encoded certificate'
     required: true
@@ -68,7 +68,7 @@ runs:
 
     - name: DMG Signing
       shell: bash
-      if: inputs.dmg
+      if: inputs.output_type == 'dmg'
       run: |
         # cd to the package
         cd "${{ inputs.package }}"
@@ -86,7 +86,7 @@ runs:
 
     - name: Bundle Signing
       shell: bash
-      if: inputs.dmg == false
+      if: inputs.output_type == 'bundle'
       run: |
         # cd to the package
         cd "${{ inputs.package }}"
