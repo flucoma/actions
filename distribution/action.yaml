@@ -12,6 +12,9 @@ inputs:
   codesign_options:
     description: 'Whether or not to code sign a hardened runtime'
     default: ''
+  output:
+    description: 'Output of DMG file'
+    default: FluCoMa.dmg
   dmg:
     description: 'Should it sign and notarise as a .dmg'
     default: false
@@ -76,10 +79,10 @@ runs:
         # sign every binary in the binary directory
         fd ${{ inputs.glob }} -E .git -I -x codesign --options=${{ inputs.codesign_options }} -s "Developer ID Application" {}
 
-        hdiutil create -srcFolder . -o FluidCorpusManipulation.dmg
-        codesign -s "Developer ID Application" --timestamp -i org.flucoma FluidCorpusManipulation.dmg
+        hdiutil create -srcFolder . -o ${{ inputs.output }}
+        codesign -s "Developer ID Application" --timestamp -i org.flucoma ${{ inputs.output }}
 
-        xcrun notarytool submit FluidCorpusManipulation.dmg --keychain-profile "ACPASS" --wait
+        xcrun notarytool submit ${{ inputs.output }} --keychain-profile "ACPASS" --wait
 
     - name: Bundle Signing
       shell: bash
