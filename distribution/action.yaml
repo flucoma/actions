@@ -29,7 +29,7 @@ runs:
       run: brew install fd
 
     - name: sign and notarise
-      shell: bash
+      shell: zsh
       run: |
         # create variables
         CERTPATH=$RUNNER_TEMP/flucoma.p12
@@ -70,5 +70,5 @@ runs:
 
         rm -rf to_notarise to_notarise.zip
 
-        fd -e ${{ inputs.binary }} -x xcrun stapler staple {} || exit 1
+        fd -e ${{ inputs.binary }} -x xcrun stapler staple {}
 
