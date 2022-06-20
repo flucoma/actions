@@ -67,5 +67,8 @@ runs:
 
         xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.appusr }} --team-id ${{ inputs.teamid }} --password ${{ inputs.apppwd }}
         xcrun notarytool submit to_notarise.zip --keychain-profile "ACPASS" --wait
-        fd -e ${{ inputs.binary }} -x xcrun stapler staple {}
+
+        rm -rf to_notarise to_notarise.zip
+
+        fd -e ${{ inputs.binary }} -x xcrun stapler staple {} || exit 1
 
