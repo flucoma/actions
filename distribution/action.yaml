@@ -54,13 +54,11 @@ runs:
         # create a folder to store the binaries in temporarily once signed
         mkdir -p to_notarise
 
+        # sign every binary in the binary directory
+        fd -e ${{ inputs.binary }} -x codesign -s "Developer ID Application" {}
+
         # now copy each of those binaries to a folder before notarisation
         fd -e ${{ inputs.binary }} -x ditto {} to_notarise/{/} 
-        
-        # sign every binary in the binary directory
-        cd to_notarise
-        fd -e ${{ inputs.binary }} -x codesign -s "Developer ID Application" {}
-        cd ..
 
         # now create a notarisation friendly zip
         /usr/bin/ditto -c -k --keepParent to_notarise to_notarise.zip
