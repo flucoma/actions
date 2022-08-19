@@ -21,7 +21,7 @@ runs:
     - name: Install (Mac/Linux)
       if: runner.os == 'macOS' || runner.os == 'Linux'
       run: | 
-        cmake -GNinja -DSC_PATH=../sdk -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
+        cmake -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -GNinja -DSC_PATH=../sdk -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
         pip install -r _deps/flucoma-docs-src/requirements.txt
         ninja install
       working-directory: build
