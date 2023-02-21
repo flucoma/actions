@@ -9,6 +9,6 @@ runs:
   using: "composite"
   steps:
     - id: retrieve-version
-      run: echo "::set-output name=sha::$(cat flucoma.version.rc)"
+      run: echo "sha=$(cat flucoma.version.rc)" >> $GITHUB_OUTPUT
       working-directory: core
       shell: bash
