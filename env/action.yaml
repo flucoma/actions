@@ -2,9 +2,9 @@ name: 'Setup FluCoMa Build Enivronment'
 description: 'Installs common tools across FluCoMa continuous integration deployment'
 inputs:
   branch:
-    description: 'Which branch to pull dependencies from (main/dev)'
+    description: 'Which branch to pull dependencies from (main/production)'
     required: false
-    default: 'dev'
+    default: 'main'
 
 runs:
   using: "composite"

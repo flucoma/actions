@@ -2,9 +2,9 @@ name: 'Build FluCoMa Toolkit for Max'
 description: 'Builds the FluCoMa Toolkit for Max'
 inputs:
   branch:
-    description: 'Which branch to pull flucoma dependencies from (main/dev)'
+    description: 'Which branch to pull flucoma dependencies from (main/production)'
     required: true
-    default: 'dev'
+    default: 'main'
 runs:
   using: "composite"
   steps:
