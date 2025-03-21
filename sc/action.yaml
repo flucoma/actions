@@ -30,7 +30,7 @@ runs:
       id: core_branch
       if: ${{ inputs.core_branch }} != ${{ inputs.branch }}
       run: |
-        git clone --single-branch --branch ${{ inputs.core_branch }} core
+        git clone --single-branch --branch ${{ inputs.core_branch }} https://github.com/flucoma/flucoma-core core
         echo "CORE_PATH=-DFETCHCONTENT_SOURCE_DIR_FLUCOMA-CORE=../core" >> "$GITHUB_ENV"
       shell: bash 
 
