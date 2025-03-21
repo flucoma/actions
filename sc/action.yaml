@@ -9,6 +9,10 @@ inputs:
     description: 'The type of build needed (Debug, Release etc)'
     required: false 
     default: 'Release'
+  core_branch: 
+    description: 'Select a specific branch for flucoma-core'
+    required: false
+    default: 'main'
 runs:
   using: "composite"
   steps:
@@ -22,10 +26,18 @@ runs:
       run: git clone --single-branch --branch main --recursive https://github.com/supercollider/supercollider.git sdk
       shell: bash
 
+    - name: Conditionally download flucoma-core 
+      id: core_branch
+      if: ${{ inputs.core_branch }} != ${{ inputs.branch }}
+      run: |
+        git clone --single-branch --branch ${{ inputs.core_branch }} core
+        echo "CORE_PATH=-DFETCHCONTENT_SOURCE_DIR_FLUCOMA-CORE=../core" >> "$GITHUB_ENV"
+      shell: bash 
+
     - name: Install (Mac/Linux)
       if: runner.os == 'macOS' || runner.os == 'Linux'
       run: | 
-        cmake -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.build_type }} -DSC_PATH=../sdk -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
+        cmake -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.build_type }} -DSC_PATH=../sdk -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ${{ steps.core_branch.outputs.CORE_PATH }} ..
         pip install -r _deps/flucoma-docs-src/requirements.txt
         ninja install
       working-directory: build
