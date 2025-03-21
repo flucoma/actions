@@ -5,6 +5,10 @@ inputs:
     description: 'Which branch to pull flucoma dependencies from (main/production)'
     required: true
     default: 'main'
+  build_type:
+    description: 'The type of build needed (Debug, Release etc)'
+    required: false 
+    default: 'Release'
 runs:
   using: "composite"
   steps:
@@ -21,7 +25,7 @@ runs:
     - name: Install (Mac/Linux)
       if: runner.os == 'macOS' || runner.os == 'Linux'
       run: | 
-        cmake -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -GNinja -DSC_PATH=../sdk -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
+        cmake -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -GNinja -DCMAKE_BUILD_TYPE=${{ inputs.build_type }} -DSC_PATH=../sdk -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
         pip install -r _deps/flucoma-docs-src/requirements.txt
         ninja install
       working-directory: build
@@ -30,7 +34,7 @@ runs:
     - name: Install (Windows)
       if: runner.os == 'Windows'
       run: | 
-        cmake -DSC_PATH="../sdk" -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
+        cmake -DCMAKE_BUILD_TYPE=${{ inputs.build_type }} -DSC_PATH="../sdk" -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
         pip install -r _deps/flucoma-docs-src/requirements.txt
         cmake --build . --target install --config Release
       working-directory: build
