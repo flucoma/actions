@@ -13,6 +13,10 @@ inputs:
     description: 'Select a specific branch for flucoma-core'
     required: false
     default: 'main'
+  sc_branch: 
+    description: 'Select an SC branch to use'
+    requireed: false 
+    default: 'main'
 runs:
   using: "composite"
   steps:
@@ -23,7 +27,7 @@ runs:
         python-version: '3.9'
             
     - name: Get SuperCollider Source
-      run: git clone --single-branch --branch main --recursive https://github.com/supercollider/supercollider.git sdk
+      run: git clone --single-branch --branch ${{ inputs.sc_branch }} --recursive https://github.com/supercollider/supercollider.git sdk
       shell: bash
 
     - name: Conditionally download flucoma-core 
