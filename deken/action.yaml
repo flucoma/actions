@@ -1,0 +1,63 @@
+# Composite action: Package and upload FluCoMa Pd for deken
+name: 'Package and upload FluCoMa Pd for deken'
+description: 'Merge platform builds, create .dek package, and upload to deken'
+inputs:
+  version:
+    description: 'Version tag for deken package'
+    required: true
+  deken_username:
+    description: 'Username from puredata.info credentials'
+    required: true
+  deken_password:
+    description: 'Password from puredata.info credentials'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout source (for source upload)
+      uses: actions/checkout@v4
+      with:
+        path: FluidCorpusManipulation-src
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: release-artifacts
+
+    - name: Extract and merge platform builds
+      shell: bash
+      run: |
+        cd release-artifacts
+        tar -xzf linuxbuild/*.tar.gz -C ..
+        tar -xzf macdeken/*.tar.gz -C ..
+        unzip -nq winbuild/*.zip -d ..
+
+    - name: Package with deken
+      shell: bash
+      run: |
+        mkdir -p package
+        docker run --rm --user $(id -u) \
+          --volume ./FluidCorpusManipulation:/FluidCorpusManipulation \
+          --volume ./package:/package \
+          registry.git.iem.at/pd/deken \
+          deken package --output-dir /package --version "${{ inputs.version }}" /FluidCorpusManipulation
+
+    - name: Check package contents
+      shell: bash
+      run: |
+        dek_file=$(ls package/*.dek | head -n 1)
+        echo "## \`$(basename $dek_file)\`" | tee -a $GITHUB_STEP_SUMMARY
+        echo '```' | tee -a $GITHUB_STEP_SUMMARY
+        unzip -l "$dek_file" | awk 'NR>3 {print $4}' | sed '/^$/d' | sort | tee -a $GITHUB_STEP_SUMMARY
+        echo '```' | tee -a $GITHUB_STEP_SUMMARY
+
+    - name: Upload to deken
+      if: ${{ github.ref_name == 'production' || startsWith(github.ref_name, 'deken-') }}
+      shell: bash
+      run: |
+        docker run --rm -e DEKEN_USERNAME="${{ inputs.deken_username }}" -e DEKEN_PASSWORD="${{ inputs.deken_password }}" \
+          --volume ./package:/package registry.git.iem.at/pd/deken \
+          deken upload --name FluidCorpusManipulation --version "${{ inputs.version }}" --no-source-error "/package/$(basename package/*.dek)"
+        docker run --rm -e DEKEN_USERNAME="${{ inputs.deken_username }}" -e DEKEN_PASSWORD="${{ inputs.deken_password }}" \
+          --volume ./FluidCorpusManipulation-src:/FluidCorpusManipulation registry.git.iem.at/pd/deken \
+          deken upload --name FluidCorpusManipulation --version "${{ inputs.version }}" /FluidCorpusManipulation
