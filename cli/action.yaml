@@ -13,18 +13,29 @@ runs:
       id: py39
       with:
         python-version: '3.9'
+
     - name: check python
       shell: bash
-      run: echo "Python is $pythonLocation"        
-    - name: Install (Mac/Linux)
-      if: runner.os == 'macOS' || runner.os == 'Linux'
+      run: echo "Python is $pythonLocation"
+
+    - name: Install (Mac)
+      if: runner.os == 'macOS'
+      run: | 
+        cmake -GNinja -DDOCS=ON -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
+        pip install -r _deps/flucoma-docs-src/requirements.txt
+        ninja install
+      working-directory: build
+      shell: bash
+
+    - name: Install (Linux)
+      if: runner.os == 'Linux'
       run: | 
         cmake -GNinja -DDOCS=ON -DFLUID_BRANCH=${{ inputs.branch }} -DPython_ROOT_DIR=${{ env.pythonLocation }} ..
         pip install -r _deps/flucoma-docs-src/requirements.txt
         ninja install
       working-directory: build
       shell: bash
-    
+
     - name: Install (Windows)
       if: runner.os == 'Windows'
       run: | 
