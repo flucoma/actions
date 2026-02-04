@@ -32,6 +32,11 @@ runs:
         tar -xzf macdeken/*.tar.gz -C ..
         unzip -nq winbuild/*.zip -d ..
 
+    - name: Add flucoma-help.pd so deken indexes a [flucoma] object for findability
+      shell: bash
+      run: |
+        cp FluidCorpusManipulation/README.deken.pd FluidCorpusManipulation/flucoma-help.pd
+
     - name: Package with deken
       shell: bash
       run: |
