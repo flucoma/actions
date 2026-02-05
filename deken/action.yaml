@@ -11,6 +11,9 @@ inputs:
   deken_password:
     description: 'Password from puredata.info credentials'
     required: true
+  upload:
+    description: 'Whether to upload to deken (true/false)'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -52,7 +55,7 @@ runs:
         echo '```' | tee -a $GITHUB_STEP_SUMMARY
 
     - name: Upload to deken
-      if: ${{ github.ref_name == 'production' || startsWith(github.ref_name, 'deken-') }}
+      if: ${{ inputs.upload == 'true' }}
       shell: bash
       run: |
         docker run --rm -e DEKEN_USERNAME="${{ inputs.deken_username }}" -e DEKEN_PASSWORD="${{ inputs.deken_password }}" \
