@@ -62,7 +62,6 @@ runs:
 
         # import p12 to keychain
         security import "$CERTPATH" -P "${{ inputs.certpwd }}" -A -t cert -f pkcs12 -k "$KEYCHAINPATH" -T /usr/bin/codesign
-        # security set-key-partition-list -S apple-tool:,apple:, -s -k "$KEYCHAINPATH" -D "${{ inputs.cert }}" -t private "$KEYCHAINPATH"
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAINPWD" "$KEYCHAINPATH"
 
         xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.appusr }} --team-id ${{ inputs.teamid }} --password ${{ inputs.apppwd }} --keychain "$KEYCHAINPATH"
