@@ -56,15 +56,16 @@ runs:
         security create-keychain -p "$KEYCHAINPWD" "$KEYCHAINPATH"
 
         # append temp keychain to the user domain
-        security list-keychain -d user -s "$KEYCHAINPATH"
-        security set-keychain-settings "$KEYCHAINPATH"
+        security set-keychain-settings -lut 21600 "$KEYCHAINPATH"
         security unlock-keychain -p "$KEYCHAINPWD" "$KEYCHAINPATH"
+        security list-keychain -d user -s "$KEYCHAINPATH" login.keychain-db
 
         # import p12 to keychain
         security import "$CERTPATH" -P "${{ inputs.certpwd }}" -A -t cert -f pkcs12 -k "$KEYCHAINPATH" -T /usr/bin/codesign
-        security set-key-partition-list -S apple-tool:,apple:, -s -k "$KEYCHAINPATH" -D "${{ inputs.cert }}" -t private "$KEYCHAINPATH"
-        
-        xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.appusr }} --team-id ${{ inputs.teamid }} --password ${{ inputs.apppwd }}
+        # security set-key-partition-list -S apple-tool:,apple:, -s -k "$KEYCHAINPATH" -D "${{ inputs.cert }}" -t private "$KEYCHAINPATH"
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAINPWD" "$KEYCHAINPATH"
+
+        xcrun notarytool store-credentials "ACPASS" --apple-id ${{ inputs.appusr }} --team-id ${{ inputs.teamid }} --password ${{ inputs.apppwd }} --keychain "$KEYCHAINPATH"
 
     - name: DMG Signing
       shell: bash
