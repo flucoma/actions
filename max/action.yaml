@@ -15,7 +15,7 @@ runs:
         python-version: '3.9'
 
     - name: Get Max Source
-      run: git clone --recursive https://github.com/Cycling74/max-sdk.git sdk
+      run: git clone https://github.com/Cycling74/max-sdk-base.git sdk
       shell: bash
 
     - name: Install (Mac/Linux)
